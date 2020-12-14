@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { monaco } from '@monaco-editor/react';
 import type * as MonacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 
 type EditorType = {
   value?: string;
   language?: string;
-  editorDidMount: () => string;
+  editorDidMount?: (
+    editorCode: MonacoEditor.editor.IStandaloneCodeEditor | undefined,
+    changedText: MonacoEditor.editor.IModelContentChangedEvent,
+  ) => void;
+  valueChanged?: (value: string | undefined) => void;
   theme?: string;
   line?: number;
   width?: string;
@@ -20,6 +24,7 @@ const EditorNew = ({
   value,
   language,
   editorDidMount,
+  valueChanged,
   theme,
   line,
   width,
@@ -80,8 +85,40 @@ const EditorNew = ({
         language ? language : 'plaintext',
       );
       editorCodeRef.current.setValue(value ? value : 'hello!');
+      editorCodeRef.current.onDidChangeModelContent(monacoEvent);
     }
-  }, [isEditorCodeMounted, theme, language, value]);
+  }, [isEditorCodeMounted, theme, language]);
+
+  useEffect(() => {
+    if (editorRef.current && editorCodeRef.current && isEditorCodeMounted) {
+      console.log('👌');
+      ///////////otherwsie keeps refreshing and flickering///////////////?????? put and if with getValue == value
+
+      const v = editorCodeRef.current.getValue();
+
+      if (value != v && value) {
+        editorCodeRef.current.setValue(value);
+      }
+    }
+  }, [value]);
+
+  const monacoEvent = (e: MonacoEditor.editor.IModelContentChangedEvent) => {
+    const changedText = e;
+    const editorCode = editorCodeRef.current;
+    if (editorDidMount) {
+      editorDidMount(editorCode, changedText);
+    }
+    if (valueChanged) {
+      valueChanged(editorCode?.getValue());
+    }
+  };
+
+  /*editorDidMount = useCallback(() => {
+    const monacoEvent = (e: MonacoEditor.editor.IModelContentChangedEvent) => {
+      console.log('1->', e.changes);
+      console.log('2->', editorCodeRef.current?.getValue());
+    };
+  }, []);*/
 
   /*useEffect(() => {
     if (editorRef.current && isMonacoMounted) {
