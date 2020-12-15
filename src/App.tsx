@@ -4,27 +4,17 @@ import './App.css';
 import EditorNew from './editorNew';
 import type * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 
-interface AppProps {}
-
-function App({}: AppProps) {
+function App() {
   // Create the count state.
   const editorRef = React.useRef<monacoEditor.editor.IStandaloneCodeEditor>();
   const [value, setValue] = useState('Start...');
 
-  // Create the counter (+1 every second).
-  /*function handleEditorDidMount(
-    getValue: () => string,
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-  ): string {
-    return '';
-  }*/
-
-  const handleEditorDidMount = useCallback(() => {
-    console.log('3->');
+  const modelChagedContent = useCallback(() => {
+    //console.log('3->');
   }, []);
 
   const valueChanged = useCallback((v: string | undefined) => {
-    console.log('4->', v);
+    //console.log('4->', v);
     v ? setValue(v) : {};
   }, []);
 
@@ -39,10 +29,12 @@ function App({}: AppProps) {
         theme="vs-dark"
         height="50vh"
         language="javascript"
-        editorDidMount={handleEditorDidMount}
+        modelChagedContent={modelChagedContent}
         valueChanged={valueChanged}
       />
       <button onClick={btClick}>Click Me! 😉</button>
+      <br />
+      <textarea rows={10} value={value}></textarea>
     </>
   );
 }

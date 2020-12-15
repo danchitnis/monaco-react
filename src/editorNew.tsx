@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { monaco } from '@monaco-editor/react';
 import type * as MonacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 
 type EditorType = {
   value?: string;
   language?: string;
-  editorDidMount?: (
+  modelChagedContent?: (
     editorCode: MonacoEditor.editor.IStandaloneCodeEditor | undefined,
     changedText: MonacoEditor.editor.IModelContentChangedEvent,
   ) => void;
@@ -15,24 +15,18 @@ type EditorType = {
   width?: string;
   height?: string;
   options?: object;
-  className?: string;
-  wrapperClassName?: string;
-  overrideServices?: object;
 };
 
 const EditorNew = ({
   value,
   language,
-  editorDidMount,
+  modelChagedContent: editorDidMount,
   valueChanged,
   theme,
   line,
   width,
   height,
   options,
-  overrideServices,
-  className,
-  wrapperClassName,
 }: EditorType) => {
   const [isMonacoReady, setIsMonacoReady] = useState(false);
   const [isEditorCodeMounted, setIsEditorCodeMounted] = useState(false);
@@ -91,7 +85,7 @@ const EditorNew = ({
 
   useEffect(() => {
     if (editorRef.current && editorCodeRef.current && isEditorCodeMounted) {
-      console.log('👌');
+      //console.log('👌');
       ///////////otherwsie keeps refreshing and flickering///////////////?????? put and if with getValue == value
 
       const v = editorCodeRef.current.getValue();
@@ -112,117 +106,6 @@ const EditorNew = ({
       valueChanged(editorCode?.getValue());
     }
   };
-
-  /*editorDidMount = useCallback(() => {
-    const monacoEvent = (e: MonacoEditor.editor.IModelContentChangedEvent) => {
-      console.log('1->', e.changes);
-      console.log('2->', editorCodeRef.current?.getValue());
-    };
-  }, []);*/
-
-  /*useEffect(() => {
-    if (editorRef.current && isMonacoMounted) {
-      editorRef.current.setTheme(theme ? theme : 'vs-dark');
-      const model = editorRef.current.createModel(value ? value : 'hello!');
-      editorRef.current.setModelLanguage(
-        model,
-        language ? language : 'plaintext',
-      );
-      console.log(value);
-      console.log(editorRef.current.getValue());
-    }
-  }, [isMonacoMounted, theme, language, value]);*/
-
-  /*useEffect(() => {
-    editorRef.current.updateOptions(options);
-  }, [isEditorReady, options]);*/
-
-  /*useUpdate(
-    () => {
-      if (
-        editorRef.current.getOption(
-          monacoRef.current.editor.EditorOption.readOnly,
-        )
-      ) {
-        editorRef.current.setValue(value);
-      } else {
-        if (value !== editorRef.current.getValue()) {
-          editorRef.current.executeEdits('', [
-            {
-              range: editorRef.current.getModel().getFullModelRange(),
-              text: value,
-            },
-          ]);
-
-          if (_isControlledMode) {
-            const model = editorRef.current.getModel();
-
-            model.forceTokenization(model.getLineCount());
-          }
-
-          editorRef.current.pushUndoStop();
-        }
-      }
-    },
-    [value],
-    isEditorReady,
-  );*/
-
-  /*useUpdate(
-    () => {
-      monacoRef.current.editor.setModelLanguage(
-        editorRef.current.getModel(),
-        language,
-      );
-    },
-    [language],
-    isEditorReady,
-  );
-
-  useUpdate(
-    () => {
-      editorRef.current.setScrollPosition({ scrollTop: line });
-    },
-    [line],
-    isEditorReady,
-  );
-
-  useUpdate(
-    () => {
-      monacoRef.current.editor.setTheme(theme);
-    },
-    [theme],
-    isEditorReady,
-  );*/
-
-  /*const createEditor = useCallback(() => {
-    editorRef.current = monacoRef.current.editor.create(
-      containerRef.current,
-      {
-        value,
-        language,
-        automaticLayout: true,
-        ...options,
-      },
-      overrideServices,
-    );
-
-    editorDidMount(
-      editorRef.current.getValue.bind(editorRef.current),
-      editorRef.current,
-    );
-
-    monacoRef.current.editor.defineTheme('dark', themes['night-dark']);
-    monacoRef.current.editor.setTheme(theme);
-
-    setIsEditorReady(true);
-  }, [editorDidMount, language, options, overrideServices, theme, value]);*/
-
-  /*useEffect(() => {
-    !isMonacoMounting && !isEditorReady && createEditor();
-  }, [isMonacoMounting, isEditorReady, createEditor]);*/
-
-  //const disposeEditor = () => editorRef.current.dispose();
 
   return (
     <div
