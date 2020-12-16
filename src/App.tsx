@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import EditorNew from './editorNew';
 import type * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
@@ -9,7 +8,7 @@ function App() {
   const editorRef = React.useRef<monacoEditor.editor.IStandaloneCodeEditor>();
   const [value, setValue] = useState('Start...');
 
-  const modelChagedContent = useCallback(() => {
+  const modelChangedContent = useCallback(() => {
     //console.log('3->');
   }, []);
 
@@ -29,12 +28,17 @@ function App() {
         theme="vs-dark"
         height="50vh"
         language="javascript"
-        modelChagedContent={modelChagedContent}
+        modelChangedContent={modelChangedContent}
         valueChanged={valueChanged}
       />
       <button onClick={btClick}>Click Me! 😉</button>
       <br />
-      <textarea rows={10} value={value}></textarea>
+      <textarea
+        rows={10}
+        value={value}
+        readOnly={true}
+        style={{ width: '50%' }}
+      ></textarea>
     </>
   );
 }

@@ -5,7 +5,7 @@ import type * as MonacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 type EditorType = {
   value?: string;
   language?: string;
-  modelChagedContent?: (
+  modelChangedContent?: (
     editorCode: MonacoEditor.editor.IStandaloneCodeEditor | undefined,
     changedText: MonacoEditor.editor.IModelContentChangedEvent,
   ) => void;
@@ -20,7 +20,7 @@ type EditorType = {
 const EditorNew = ({
   value,
   language,
-  modelChagedContent: editorDidMount,
+  modelChangedContent: editorDidMount,
   valueChanged,
   theme,
   line,
