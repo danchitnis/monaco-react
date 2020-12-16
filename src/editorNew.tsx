@@ -50,48 +50,16 @@ const EditorNew = ({
       monacoEditor.languages.register({ id: 'spice' });
       monacoEditor.languages.setMonarchTokensProvider('spice', {
         defaultToken: 'invalid',
-        keywords: [
-          'abstract',
-          'continue',
-          'for',
-          'new',
-          'switch',
-          'assert',
-          'goto',
-          'do',
-          'if',
-          'private',
-          'this',
-          'break',
-          'protected',
-          'throw',
-          'else',
-          'public',
-          'enum',
-          'return',
-          'catch',
-          'try',
-          'interface',
-          'static',
-          'class',
-          'finally',
-          'const',
-          'super',
-          'while',
-          'true',
-          'false',
-        ],
+        keywords: ['vdc', 'idc', 'pulse', 'ac', 'dc', '.tran'],
 
         typeKeywords: [
-          'boolean',
-          'double',
-          'byte',
-          'int',
-          'short',
-          'char',
-          'void',
-          'long',
-          'float',
+          'tran',
+          'dc',
+          'ac',
+          'endc',
+          'control',
+          'param',
+          'include',
         ],
 
         operators: [
@@ -140,6 +108,8 @@ const EditorNew = ({
         // C# style strings
         escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 
+        ignoreCase: true,
+
         // The main tokenizer for our languages
         tokenizer: {
           root: [
@@ -154,10 +124,12 @@ const EditorNew = ({
                 },
               },
             ],
-            [/[A-Z][\w\$]*/, 'type.identifier'], // to show class names nicely
+            [/[A-Z][\w\$]*/, 'identifier'], // to show class names nicely
 
             // whitespace
             { include: '@whitespace' },
+
+            [/^([.])\w+/, 'type'],
 
             // delimiters and operators
             [/[{}()\[\]]/, '@brackets'],
@@ -176,8 +148,9 @@ const EditorNew = ({
             ],
 
             // numbers
-            [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-            [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+            [/\d*\.\d+([eE][\-+]?\d+)/, 'number.float'],
+            [/\d*\.\d+([munpf])?/, 'number'],
+            [/\d+([munpf])/, 'number'],
             [/\d+/, 'number'],
 
             // delimiter: after number because of .\d floats
@@ -193,12 +166,7 @@ const EditorNew = ({
             [/'/, 'string.invalid'],
           ],
 
-          comment: [
-            [/[^\/*]+/, 'comment'],
-            [/\/\*/, 'comment', '@push'], // nested comment
-            ['\\*/', 'comment', '@pop'],
-            [/[\/*]/, 'comment'],
-          ],
+          comment: [],
 
           string: [
             [/[^\\"]+/, 'string'],
@@ -209,11 +177,92 @@ const EditorNew = ({
 
           whitespace: [
             [/[ \t\r\n]+/, 'white'],
-            [/\/\*/, 'comment', '@comment'],
-            [/\/\/.*$/, 'comment'],
+            //[/^(.*)$/, 'comment'],
+            [/^[*].*/, 'comment'],
           ],
         },
       } as MonarchLanguageConfiguration);
+
+      const createDependencyProposals = (range: {
+        startLineNumber: number;
+        endLineNumber: number;
+        startColumn: number;
+        endColumn: number;
+      }) => {
+        // returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
+        // here you could do a server side lookup
+        return [
+          {
+            label: 'tran',
+            kind: monacoEditor.languages.CompletionItemKind.Function,
+            documentation: 'The Lodash library exported as Node.js modules.',
+            insertText: 'tran ${1:step} ${2:max_time} ',
+            insertTextRules:
+              monacoEditor.languages.CompletionItemInsertTextRule
+                .InsertAsSnippet,
+            range: range,
+          },
+          {
+            label: 'dc',
+            kind: monacoEditor.languages.CompletionItemKind.Function,
+            documentation: 'Fast, unopinionated, minimalist web framework',
+            insertText:
+              'dc ${1:source} ${2:min_voltage} ${3:max_voltage} ${4:step} ',
+            insertTextRules:
+              monacoEditor.languages.CompletionItemInsertTextRule
+                .InsertAsSnippet,
+            range: range,
+          },
+          {
+            label: 'dc (sweep)',
+            kind: monacoEditor.languages.CompletionItemKind.Function,
+            documentation: 'Fast, unopinionated, minimalist web framework',
+            insertText:
+              'dc ${1:source} ${2:min_voltage} ${3:max_voltage} ${4:step} ${5:source} ${6:min_voltage} ${7:max_voltage} ${8:step} ',
+            insertTextRules:
+              monacoEditor.languages.CompletionItemInsertTextRule
+                .InsertAsSnippet,
+            range: range,
+          },
+          {
+            label: 'm (mosfet)',
+            kind: monacoEditor.languages.CompletionItemKind.Function,
+            documentation: 'Fast, unopinionated, minimalist web framework',
+            insertText:
+              'm${1:number} ${2:d} ${3:g} ${4:s} ${5:b} ${6:model} W=${7:w} L=${8:l} ',
+            insertTextRules:
+              monacoEditor.languages.CompletionItemInsertTextRule
+                .InsertAsSnippet,
+            range: range,
+          },
+        ];
+      };
+
+      monacoEditor.languages.registerCompletionItemProvider('spice', {
+        provideCompletionItems: function (model, position) {
+          // find out if we are completing a property in the 'dependencies' object.
+          let textUntilPosition = model.getValueInRange({
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column,
+          });
+          let match = true;
+          if (!match) {
+            return { suggestions: [] };
+          }
+          let word = model.getWordUntilPosition(position);
+          let range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
+          };
+          return {
+            suggestions: createDependencyProposals(range),
+          };
+        },
+      });
 
       setIsMonacoReady(true);
     };
