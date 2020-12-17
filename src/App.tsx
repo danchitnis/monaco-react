@@ -27,7 +27,7 @@ function App() {
         value={value}
         theme="vs-dark"
         height="50vh"
-        language="javascript"
+        language="spice"
         modelChangedContent={modelChangedContent}
         valueChanged={valueChanged}
       />
