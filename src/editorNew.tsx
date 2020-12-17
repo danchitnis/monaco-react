@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { monaco } from '@monaco-editor/react';
 import type * as MonacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
+import loadMonaco from './loader';
 
 // https://www.gitmemory.com/issue/microsoft/monaco-editor/1423/530617327
 interface MonarchLanguageConfiguration
@@ -43,64 +44,22 @@ const EditorNew = ({
 
   useEffect(() => {
     const f = async () => {
-      const monacoEditor = await monaco.init();
+      //const monacoEditor = await monaco.init();
+      const monacoEditor = await loadMonaco();
       monacoRef.current = monacoEditor;
       editorRef.current = monacoEditor.editor;
+
+      //const a = await loadMonaco();
+      //console.log('a is loaded', a);
 
       monacoEditor.languages.register({ id: 'spice' });
       monacoEditor.languages.setMonarchTokensProvider('spice', {
         defaultToken: 'invalid',
-        keywords: ['vdc', 'idc', 'pulse', 'ac', 'dc', '.tran'],
+        keywords: ['vdc', 'idc', 'pulse', 'ac', 'dc'],
 
-        typeKeywords: [
-          'tran',
-          'dc',
-          'ac',
-          'endc',
-          'control',
-          'param',
-          'include',
-        ],
+        typeKeywords: [],
 
-        operators: [
-          '=',
-          '>',
-          '<',
-          '!',
-          '~',
-          '?',
-          ':',
-          '==',
-          '<=',
-          '>=',
-          '!=',
-          '&&',
-          '||',
-          '++',
-          '--',
-          '+',
-          '-',
-          '*',
-          '/',
-          '&',
-          '|',
-          '^',
-          '%',
-          '<<',
-          '>>',
-          '>>>',
-          '+=',
-          '-=',
-          '*=',
-          '/=',
-          '&=',
-          '|=',
-          '^=',
-          '%=',
-          '<<=',
-          '>>=',
-          '>>>=',
-        ],
+        operators: ['=', '>', '<'],
 
         // we include these common regular expressions
         symbols: /[=><!~?:&|+\-*\/\^%]+/,
@@ -113,7 +72,6 @@ const EditorNew = ({
         // The main tokenizer for our languages
         tokenizer: {
           root: [
-            // identifiers and keywords
             [
               /[a-z_$][\w$]*/,
               {
@@ -124,7 +82,6 @@ const EditorNew = ({
                 },
               },
             ],
-            [/[A-Z][\w\$]*/, 'identifier'], // to show class names nicely
 
             // whitespace
             { include: '@whitespace' },
