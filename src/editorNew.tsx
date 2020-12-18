@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { monaco } from '@monaco-editor/react';
+//import { monaco } from '@monaco-editor/react';
 import type * as MonacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 import loadMonaco from './loader';
 
