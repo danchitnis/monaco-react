@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-//import { monaco } from '@monaco-editor/react';
 import type * as MonacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
-import loadMonaco from './loader';
+import monacoLoader from './monacoLoader';
 
 // https://www.gitmemory.com/issue/microsoft/monaco-editor/1423/530617327
 interface MonarchLanguageConfiguration
@@ -9,7 +8,7 @@ interface MonarchLanguageConfiguration
   keywords: string[];
 }
 
-type EditorType = {
+type EditorCustomType = {
   value?: string;
   language?: string;
   modelChangedContent?: (
@@ -24,7 +23,7 @@ type EditorType = {
   options?: object;
 };
 
-const EditorNew = ({
+const EditorCustom = ({
   value,
   language,
   modelChangedContent: editorDidMount,
@@ -34,7 +33,7 @@ const EditorNew = ({
   width,
   height,
   options,
-}: EditorType) => {
+}: EditorCustomType) => {
   const [isMonacoReady, setIsMonacoReady] = useState(false);
   const [isEditorCodeMounted, setIsEditorCodeMounted] = useState(false);
   const editorCodeRef = useRef<MonacoEditor.editor.IStandaloneCodeEditor>();
@@ -45,7 +44,7 @@ const EditorNew = ({
   useEffect(() => {
     const f = async () => {
       //const monacoEditor = await monaco.init();
-      const monacoEditor = await loadMonaco();
+      const monacoEditor = await monacoLoader();
       monacoRef.current = monacoEditor;
       editorRef.current = monacoEditor.editor;
 
@@ -301,4 +300,4 @@ const EditorNew = ({
   );
 };
 
-export default EditorNew;
+export default EditorCustom;
