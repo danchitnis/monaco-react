@@ -1,25 +1,30 @@
-# New Project
+# Monaco-Editor React
 
-> ✨ Bootstrapped with Create Snowpack App (CSA).
+## [DEMO 🚀](https://monaco-react.vercel.app/)
 
-## Available Scripts
+This is a standalone example of using [monaco-editor](https://microsoft.github.io/monaco-editor/) in [React](https://reactjs.org/) with a custom loader. For smaller projects it is more convenient to use a pre-bundled official version provided by Microsoft, rather than including the source in the project for bundling. Since the monaco codebase is fairly large (and not so ES6) it may various challenges for a model bundler like ([esbuild](https://esbuild.github.io/), [Rollup](https://rollupjs.org/), etc). The advantages of this example are:
 
-### npm start
+- small code size
+- no dependency other than monaco-editor itself!
+- close to "React" way of coding style
+- functional React code
+- highly customizable, no need for npm, etc
 
-Runs the app in the development mode.
-Open http://localhost:8080 to view it in the browser.
+## Loader
 
-The page will reload if you make edits.
-You will also see any lint errors in the console.
+TBD
 
-### npm run build
+## Editor
 
-Builds a static copy of your site to the `build/` folder.
-Your app is ready to be deployed!
+TBD
 
-**For the best production performance:** Add a build bundler plugin like "@snowpack/plugin-webpack" to your `snowpack.config.js` config file.
+## Custom languages
 
-### npm test
+TBD
 
-Launches the application test runner.
-Run with the `--watch` flag (`npm test -- --watch`) to run in interactive watch mode.
+## Contributions
+
+inspired by:
+
+- [@monaco-editor/react](https://github.com/suren-atoyan/monaco-react)
+- [react-monaco-editor](https://github.com/react-monaco-editor/react-monaco-editor)
