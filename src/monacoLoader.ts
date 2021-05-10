@@ -18,7 +18,7 @@ const monacoLoader = (): Promise<typeof MonacoEditor> => {
     //script3.src = 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js';
     monacoLoader.async = true;
     monacoLoader.src =
-      'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs/loader.js';
+      'https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs/loader.js';
 
     monacoLoader.crossOrigin = 'anonymous';
     const scriptLoaded = () => {
@@ -31,7 +31,7 @@ const monacoLoader = (): Promise<typeof MonacoEditor> => {
     monacoRequire.async = true;
     //script2.type = 'module';
     monacoRequire.innerHTML = `
-    require.config({"paths":{"vs":"https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2/min/vs"}});
+    require.config({"paths":{"vs":"https://cdn.jsdelivr.net/npm/monaco-editor@0.23.0/min/vs"}});
     require(['vs/editor/editor.main'], function() {
       document.dispatchEvent(new CustomEvent('monacoLoaded', {detail: monaco}));
     });
